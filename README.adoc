@@ -1,0 +1,74 @@
+= simple-http-client
+
+This is a simple utility that has been adapted from Apache Tomcat unit tests, to enable testing HTTP servers.
+It is specifically quite useful for sending malformed requests to servers to see how they behave. Most HTTP
+client libraries will not enable you to build malformed requests.
+
+NOTE: This client is intended for testing purposes only, and should not be considered suitable for production use.
+
+== Example usage
+
+The tests included in the source code provide an example of usage:
+
+
+```
+SimpleHttpClient client = new SimpleHttpClient() {
+            public Exception doRequest() {
+                try {
+                    setHostname(webappUrl.getHost());
+                    setPort(webappUrl.getPort());
+
+                    // Open connection
+                    connect();
+
+                    String[] request = new String[1];
+                    request[0] =
+                            "GET /service/test HTTP/1.1" + CRLF +
+                            "Host: " + webappUrl.getHost() + ":" + webappUrl.getPort() + CRLF +
+                            "sec-ch-ua: \"Chromium\";v=\"91\", \" Not;A Brand\";v=\"99\"" + CRLF +
+                            "sec-ch-ua-mobile: ?0" + CRLF +
+                            "Upgrade-Insecure-Requests: 1" + CRLF +
+                            "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Safari/537.36" + CRLF +
+                            "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9" + CRLF +
+                            "Sec-Fetch-Site: none" + CRLF +
+                            "Sec-Fetch-Mode: navigate" + CRLF +
+                            "Sec-Fetch-User: ?1" + CRLF +
+                            "Sec-Fetch-Dest: document" + CRLF +
+                            "Accept-Encoding: gzip, deflate" + CRLF +
+                            "Accept-Language: en-GB,en-US;q=0.9,en;q=0.8" + CRLF +
+                            "Connection: close" + CRLF +
+                            "" + CRLF +
+                            "";
+
+                    setRequest(request);
+                    processRequest(); // blocks until response has been read
+
+                    // Close the connection
+                    disconnect();
+                } catch (Exception e) {
+                    return e;
+                }
+                return null;
+            }
+
+            @Override
+            public boolean isResponseBodyOK() {
+                // TODO: add assertions here
+                return true;
+            }
+        };
+
+        final Exception e = client.doRequest();
+
+        if (e != null) {
+            throw e;
+        }
+
+        Assert.assertTrue(client.isResponse200());
+        Assert.assertTrue(client.isResponseBodyOK());
+```
+
+The SimpleHttpClient class provides a self-contained abstract class for you to implement
+the `doRequest()` and `isResponseBodyOK()` methods.
+
+The `doRequest()` method would typically call `setRequest()` with the request to execute as a plain string, and `processRequest()` to actually execute the request.
