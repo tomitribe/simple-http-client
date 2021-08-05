@@ -27,14 +27,14 @@
 
   <artifactId>simple-http-client</artifactId>
   <packaging>jar</packaging>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <name>Tomitribe :: Simple HTTP Client</name>
 
   <scm>
     <connection>scm:git:git@github.com:tomitribe/simple-http-client.git</connection>
     <url>scm:git:git@github.com:tomitribe/simple-http-client.git</url>
     <developerConnection>scm:git:git@github.com:tomitribe/simple-http-client.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>simple-http-client-0.1</tag>
   </scm>
 
   <dependencies>
